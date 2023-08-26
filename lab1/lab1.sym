@@ -1,0 +1,11 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	DIGITS            3002
+//	BITS              3007
+//	PRINT             3012
+//	ENDPROG           301C
+//	PRINTCONST1       301D
+//	PRINTCONST2       301E
+
