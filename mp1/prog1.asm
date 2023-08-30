@@ -104,6 +104,104 @@ PRINT_HIST
 ; for your implementation, list registers used in this part of the code,
 ; and provide sufficient comments
 
+; R0: digit(the output)
+; R1: digit counter
+; R2: bit counter, temp register
+; R3: input
+; R4: Histogram pointer
+; R5: print counter for the historgram
+
+
+LD R4, HIST_ADDR	; initialize histogram pointer
+AND R5, R5, #0
+
+
+WORDLOOP
+
+LD R3, NUM_BINS
+NOT R3, R3
+ADD R3, R3, #1
+ADD R3, R3, R5 ; Subtract NUM_BINS from the  current histogram row count
+BRz DONE 		
+
+
+LD R0, HISTROWCONST   ; PRINT corresponding character
+ADD R0, R0, R5
+OUT
+LD R0, SPACECONST	; print space
+OUT
+
+
+
+LDR R3, R4, #0 ; load the value into the input using the pointer
+	
+
+; Prints each 16bit hex word
+AND R1, R1, #0 ; initialize digit counter
+ADD R1, R1, #4
+
+DIGITS  AND R1, R1, R1
+        ;BRnz WORDLOOP    ; LOOP again if we printed 4 digits
+
+        AND R0, R0, #0  ; init digit
+
+
+        AND R2, R2, #0 ; init bit counter
+        ADD R2, R2, #4  ; bit counter start from 4      
+
+BITS    AND R2, R2, R2  ; load R2(bitcnt to nzp) MAY NOT NEED THIS LINE
+        BRnz PRINT      ; if bitCnt <= 0 branch         
+
+        ADD R0, R0, R0  ; shift digit(output) left
+
+        AND R3, R3, R3  ; load R3 to nzp
+        BRn #2          ; if MSB == 1 branch
+
+        ADD R0, R0, #0  ; if MSB == 0           
+        BRnzp #1
+        ADD R0, R0, #1  ; if MSB == 1
+
+        ADD R3, R3, R3  ; shift R3 left
+
+        ADD R2, R2, #-1 ; decrement bit counter
+        BRnzp BITS
+
+
+PRINT	
+
+		AND R0, R0, R0  ; load R0 for nzp
+        ADD R2, R0, #-9 ; repurpose R2 for comparing of R0 <= 9
+
+        ; set the ascii offset  
+        BRnz #2
+        LD R2, PRINTCONST2
+        BRnzp #1
+        LD R2, PRINTCONST1 ; if R0 <= 9
+
+		
+
+        ADD R0, R0, R2 ; add ascii offset to R0
+
+        OUT ; Print character to screen
+
+        ADD R1, R1, #-1 ; Decrement digit counter
+
+		
+
+		
+
+        BRp DIGITS ; Contiunue printing rest of the word
+
+
+
+LD R0, NEWLINECONST	; prints \n
+OUT 
+ADD R4, R4, #1	; Increment hist pointer
+ADD R5, R5, #1 	; Increment hist Counter
+BRnzp WORDLOOP
+
+
+
 
 
 DONE	HALT			; done
@@ -117,10 +215,18 @@ AT_MIN_BQ	.FILL xFFE0	; the difference between ASCII '@' and '`'
 HIST_ADDR	.FILL x3F00     ; histogram starting address
 STR_START	.FILL x4000	; string starting address
 
+; Constants needed for offseting ascii values
+PRINTCONST1 .FILL x0030 
+PRINTCONST2 .FILL x0037
+
+HISTROWCONST .FILL x0040
+SPACECONST	.FILL x0020
+NEWLINECONST .FILL x000A
+
 ; for testing, you can use the lines below to include the string in this
 ; program...
-; STR_START	.FILL STRING	; string starting address
-; STRING		.STRINGZ "This is a test of the counting frequency code.  AbCd...WxYz."
+ ;STR_START	.FILL STRING	; string starting address
+ ;STRING		.STRINGZ "This is a test of the counting frequency code.  AbCd...WxYz."
 
 
 
