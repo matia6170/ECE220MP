@@ -1,8 +1,29 @@
 .ORIG x3000
 ; Write code to read in characters and echo them
 ; till a newline character is entered.
+READINPUT
 
- 
+        GETC
+        LD R1, NEW_LINE
+        NOT R1, R1
+        ADD R1, R1, #1
+
+        ADD R1, R0, R1
+        BRz END_PROG
+
+        JSR IS_BALANCED
+        AND R0, R5, R5
+        OUT
+         
+        BRnzp READINPUT
+
+END_PROG 
+        LD R0, NUMB
+        ADD R0, R5, R5
+        OUT
+        HALT 
+
+NUMB    .FILL x0030
 SPACE   .FILL x0020
 NEW_LINE        .FILL x000A
 CHAR_RETURN     .FILL x000D
@@ -10,7 +31,70 @@ CHAR_RETURN     .FILL x000D
 ;if ( push onto stack if ) pop from stack and check if popped value is (
 ;input - R0 holds the input
 ;output - R5 set to -1 if unbalanced. else 1.
+
+;IN:R0, OUT: R5 (1 - balanced, -1 - unbalanced/stack overflow/underflow)
 IS_BALANCED
+        ST R1, ASCII_SaveR1     ;save R1
+        ST R7, SAVE_R7
+        ADD R5, R5, #-1
+
+        LD R1, OP_BRACKET
+        NOT R1, R1
+        ADD R1, R1, #1
+
+        ADD R1, R0, R1
+        BRz STARTING_BRACKET
+ 
+        LD R1, CL_BRACKET
+        NOT R1, R1
+        ADD R1, R1, #1
+
+        ADD R1, R0, R1
+        BRz CLOSING_BRACKET
+
+        BRnzp END_IS_BAL 
+        
+
+       
+STARTING_BRACKET
+        JSR PUSH
+        AND R0, R5, R5  ; save push output to R0
+        AND R5, R5, #-1 ; set return value to -1
+        AND R0, R0, R0  ;
+
+        BRp END_IS_BAL  ; if the stack overflows -> end 
+        
+        AND R5, R0, R0  ; if not, reset R5 to the correct value 
+        BRnzp END_IS_BAL
+CLOSING_BRACKET
+        JSR POP
+
+        AND R0, R5, R5  ; save push output to R0
+        AND R5, R5, #-1 ; set return value to -1
+        AND R0, R0, R0  ;
+
+        BRp END_IS_BAL  ; if the stack underflows -> end 
+        
+        AND R5, R0, R0  ; if not, reset R5 to the correct value 
+
+END_IS_BAL
+        LD R0, STACK_START
+        LD R1, STACK_TOP
+        NOT R1, R1
+        ADD R1, R1, #1
+        ADD R1, R0, R1
+        BRnp #1 ; SET return value to 1 if stack pointer is at the start.
+        AND R5, R5, #1
+
+
+
+        LD R1, ASCII_SaveR1
+        LD R7, SAVE_R7
+        RET
+  
+ASCII_SaveR1    .BLKW #1
+SAVE_R7         .BLKW #1
+
 
 NEG_OPEN .FILL xFFD8
 ;IN:R0, OUT:R5 (0-success, 1-fail/overflow)
@@ -73,6 +157,9 @@ POP_SaveR4      .BLKW #1        ;
 STACK_END       .FILL x3FF0     ;
 STACK_START     .FILL x4000     ;
 STACK_TOP       .FILL x4000     ;
+
+OP_BRACKET      .FILL x0028     ;
+CL_BRACKET      .FILL x0029     ;
 
 .END
 

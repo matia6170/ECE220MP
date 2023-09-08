@@ -1,0 +1,33 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	READINPUT         3000
+//	END_PROG          300A
+//	NUMB              300E
+//	SPACE             300F
+//	NEW_LINE          3010
+//	CHAR_RETURN       3011
+//	IS_BALANCED       3012
+//	STARTING_BRACKET  3020
+//	CLOSING_BRACKET   3027
+//	END_IS_BAL        302D
+//	ASCII_SaveR1      3037
+//	SAVE_R7           3038
+//	NEG_OPEN          3039
+//	PUSH              303A
+//	OVERFLOW          3048
+//	DONE_PUSH         3049
+//	PUSH_SaveR3       304C
+//	PUSH_SaveR4       304D
+//	POP               304E
+//	UNDERFLOW         305B
+//	DONE_POP          305C
+//	POP_SaveR3        305F
+//	POP_SaveR4        3060
+//	STACK_END         3061
+//	STACK_START       3062
+//	STACK_TOP         3063
+//	OP_BRACKET        3064
+//	CL_BRACKET        3065
+
