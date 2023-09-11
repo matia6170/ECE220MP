@@ -1,5 +1,15 @@
-//partners: awinick2, hyunwoo6, crjung2
+/*
+    ========================================
+    MP3
+    partners: awinick2, hyunwoo6, crjung2
+    ========================================
 
+    The program reads which line from the pascal triangle the user wants to see.
+    Then the program iterates by the inputted number of times where it calls the nCr() function to print the next column of the given row.
+    The nCr function uses the formula given from the mp3 assignment page.
+    It calculates the denominator and the numerator seperately, and computes the final answer by returning (numerator/denominator).
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 
