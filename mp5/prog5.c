@@ -1,3 +1,23 @@
+/* ==============================
+ * ============[MP5]=============
+ * ==============================
+ * 
+ * =======[Group Memebers]=======
+ * |||crjung2,hyunwoo6,awinick2|||
+ * 
+ * ==============================
+ * We worked on the three functions that we were supposed to work on: set_seed, start_game, and make_guess.
+ * In set_seed, we check if the user input for setting the seed is valid or not.
+ * If valid, we set the seed and return 1. Else, we print an invalid seed mesesage and return 0.
+ * In start_game, we used modulus to limit the random nuber between 0 an 7. Then we added 1 to make it 1 to 9.
+ * Then we save eawch of the generated nubmer to each of the coresponding static solution variables so that we can access it later.
+ * In make_guess, we check if input is valid. If invalid we print error and return 0 
+ * Then we increment guess number, and we create arrays for the solutions, for the guess, and for keeping track of found perfect matches.
+ * Then we iterate through the guesses to check for perfect and missed matches. We increment each counter coresspondingly. 
+ * Then we print our output with the counter values.
+ */
+
+
 /*
  *
  * prog5.c - source file adapted from UIUC ECE198KL Spring 2013 Program 4
@@ -11,7 +31,6 @@
  */
 
 #include "prog5.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,7 +45,6 @@ static int solution2;
 static int solution3;
 static int solution4;
 
-int randRange(int min, int max) { return rand() % (max + 1 - min) + min; }
 /*
  * set_seed -- This function sets the seed value for pseudorandom
  * number generation based on the number the user types.
@@ -62,14 +80,16 @@ int set_seed(const char seed_str[]) {
 
     int seed;
     char post[2];
+    // we check if the use input seed value is invalid or not.
     if (sscanf(seed_str, "%d%1s", &seed, post) == 1) {
+        //if valid we set seed and return 1
         srand(seed);
-
-        return 1;
-    } else {
-        printf("set_seed: invalid seed\n");
-        return 0;
+        return 1; 
     }
+    
+    // if not, we print error and return 0
+    printf("set_seed: invalid seed\n");
+    return 0;
 }
 
 /*
@@ -89,15 +109,17 @@ int set_seed(const char seed_str[]) {
  */
 void start_game(int* one, int* two, int* three, int* four) {
     // your code here
+
+    // We use modulus to limit the random number output from 0-7. Then we add 1 to make it 1 to 9
     *one = (rand() % 8) + 1;
     *two = (rand() % 8) + 1;
     *three = (rand() % 8) + 1;
     *four = (rand() % 8) + 1;
+    // Then we save each of the generated number to each of the corresponding solutions.
     solution1 = *one;
     solution2 = *two;
     solution3 = *three;
     solution4 = *four;
-
 }
 
 /*
@@ -137,46 +159,54 @@ int make_guess(const char guess_str[], int* one, int* two, int* three,
     //  statement, delete these comments, and modify the return statement as
     //  needed
 
-    int perfect = 0, missed = 0;
+    int perfect = 0,
+        missed = 0;  // counter for the perfect matches and the missed matches
 
-    int ans[] = {solution1, solution2, solution3, solution4};
-    int perfectMatch[] = {0, 0, 0, 0};
+    int ans[] = {solution1, solution2, solution3, solution4};  // create an array for the solutions for easy comparison
+    int perfectMatch[] = {0, 0, 0, 0};  // array of length 4 to keep track indices with perfect matches
 
-    char post[2];
+    char post[2];  // to store the access input data
 
+    // Here, return 0 and print error if the guess that we get from the user does not have exactly 4 items.
     if (sscanf(guess_str, "%d%d%d%d%1s", one, two, three, four, post) != 4) {
         printf("make_guess: invalid guess\n");
         return 0;
     }
+    // we create another array to store the values of the guessed numbers. We use this array to compare.
     int guess[] = {*one, *two, *three, *four};
 
+    // Here we check for another invalid input. We return 0 and print error if
+    // any of the 4 integers in the guess is less than 1 or greater than 8
     for (int i = 0; i < 4; i++) {
         if ((guess[i] < 1 || guess[i] > 8)) {
             printf("make_guess: invalid guess\n");
             return 0;
         }
     }
+    // increment the guess number. It is safe to increment it here since if there was an invalid input, function would have returned and ended.
     guess_number++;
 
-    for (int i = 0; i < 4; i++) {
-        if (guess[i] == ans[i]) {
-            perfect++;
-            perfectMatch[i] = 1;
-            continue;
+    // Detect perfect matches and missed matches
+    for (int i = 0; i < 4; i++) {  // iterate through each of the 4 guess numbers
+        if (guess[i] == ans[i]) {  // if we find that the guess number and the answer is equal on the same index
+            perfect++;             // we increment the perfect match counter;
+            perfectMatch[i] = 1;   // we also mark in our pefectMatch array that we found a perfect match in the i'th index.
+            continue;  // since we had a pefect match there is no missed match in this index, we end the iteration.
         }
 
-        // not a perfect match
-        for (int j = 0; j < 4; j++) {
+        // If the current index is not a perfect match, we check if this current index is a missed match.
+
+        for (int j = 0; j < 4; j++) {  // we iterate through the 4 answers
+            // we first check if the current index of the guess is equal to any of the possible answers.
+            // We also make sure to not check when the current answer we are comparing to is already a perfect match. This prevents double counting.
             if (guess[i] == ans[j] && perfectMatch[j] == 0) {
-                missed++;
+                missed++; // If it passes all of the cases, we increment missed match counter
             }
         }
     }
 
-    printf(
-        "With guess %d, you got %d perfect matches and %d misplaced "
-        "matches.\n",
-        guess_number, perfect, missed);
+    // print output
+    printf("With guess %d, you got %d perfect matches and %d misplaced matches.\n", guess_number, perfect, missed);
 
     return 1;
 }
