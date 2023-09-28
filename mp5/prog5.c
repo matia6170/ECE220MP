@@ -13,7 +13,7 @@
  * Then we save eawch of the generated nubmer to each of the coresponding static solution variables so that we can access it later.
  * In make_guess, we check if input is valid. If invalid we print error and return 0 
  * Then we increment guess number, and we create arrays for the solutions, for the guess, and for keeping track of found perfect matches.
- * Then we iterate through the guesses to check for perfect and missed matches. We increment each counter coresspondingly. 
+ * Then we create two loops to check for perfect and missed matches. We increment each counter coresspondingly. 
  * Then we print our output with the counter values.
  */
 
@@ -186,16 +186,15 @@ int make_guess(const char guess_str[], int* one, int* two, int* three,
     // increment the guess number. It is safe to increment it here since if there was an invalid input, function would have returned and ended.
     guess_number++;
 
-    // Detect perfect matches and missed matches
+    // Detect perfect matches
     for (int i = 0; i < 4; i++) {  // iterate through each of the 4 guess numbers
         if (guess[i] == ans[i]) {  // if we find that the guess number and the answer is equal on the same index
             perfect++;             // we increment the perfect match counter;
-            perfectMatch[i] = 1;   // we also mark in our pefectMatch array that we found a perfect match in the i'th index.
-            continue;  // since we had a pefect match there is no missed match in this index, we end the iteration.
+            perfectMatch[i] = 1;   // we also mark in our pefectMatch array that we found a perfect match in the i^th index.
         }
-
-        // If the current index is not a perfect match, we check if this current index is a missed match.
-
+    }
+    // Detect missed Matches
+    for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {  // we iterate through the 4 answers
             // we first check if the current index of the guess is equal to any of the possible answers.
             // We also make sure to not check when the current answer we are comparing to is already a perfect match. This prevents double counting.
