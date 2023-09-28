@@ -69,10 +69,11 @@ main (int argc, char *argv[] )
 	int ret = make_guess("blahblah",&one,&two,&three,&four);
 	int ret2 = make_guess("1 2 3 4",&one,&two,&three,&four);
 	if (ret==0 && ret2==1){
-		printf("make_guess return value correct (10pts) \n");
+		printf("make_guess return value correct (10pts)\n");
 		score = score+10;
 	}else{
-		printf("make_guess return value incorrect (0pts) \n");
+		printf("make_guess return value incorrect (0pts)\n");
+
         }
 	ret = make_guess("8 4 8 8",&one,&two,&three,&four);
 	if (one==8 && two==4 && three==8 && four==8){

@@ -30,6 +30,10 @@ int main() {
     printf("Enter a row index: ");
     //reads the row index
     scanf("%d", &row);
+    if (row < 0) {
+	    printf("Input row must be greater than or equal to 0!!!");
+	    return -1; //returns -1 if row index is less than 0
+    }
 
     // Write your code here
     // iterates through the column of the given pascal's triangle row.
