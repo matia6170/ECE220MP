@@ -210,5 +210,3 @@ int make_guess(const char guess_str[], int* one, int* two, int* three,
 
     return 1;
 }
-// the test case code fails at test 2. test.c line 25: "12321"
-// increment guess_number when input is invalid?
