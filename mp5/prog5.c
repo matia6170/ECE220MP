@@ -111,10 +111,17 @@ void start_game(int* one, int* two, int* three, int* four) {
     // your code here
 
     // We use modulus to limit the random number output from 0-7. Then we add 1 to make it 1 to 9
+
     *one = (rand() % 8) + 1;
     *two = (rand() % 8) + 1;
     *three = (rand() % 8) + 1;
     *four = (rand() % 8) + 1;
+
+    // *one = 5;
+    // *two = 4;
+    // *three = 4;
+    // *four = 4;
+
     // Then we save each of the generated number to each of the corresponding solutions.
     solution1 = *one;
     solution2 = *two;
@@ -164,7 +171,7 @@ int make_guess(const char guess_str[], int* one, int* two, int* three,
 
     int ans[] = {solution1, solution2, solution3, solution4};  // create an array for the solutions for easy comparison
     int perfectMatch[] = {0, 0, 0, 0};  // array of length 4 to keep track indices with perfect matches
-
+    int missMatch[] = {solution1, solution2, solution3, solution4};
     char post[2];  // to store the access input data
 
     // Here, return 0 and print error if the guess that we get from the user does not have exactly 4 items.
@@ -198,8 +205,10 @@ int make_guess(const char guess_str[], int* one, int* two, int* three,
         for (int j = 0; j < 4; j++) {  // we iterate through the 4 answers
             // we first check if the current index of the guess is equal to any of the possible answers.
             // We also make sure to not check when the current answer we are comparing to is already a perfect match. This prevents double counting.
-            if (guess[i] == ans[j] && perfectMatch[j] == 0) {
-                missed++; // If it passes all of the cases, we increment missed match counter
+            if (guess[i] == missMatch[j] && perfectMatch[j] == 0) {
+                missMatch[j] = 0; //
+                missed++;               
+                break; 
             }
         }
     }
